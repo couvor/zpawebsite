@@ -8,7 +8,7 @@
         <div class="relative max-w-3xl space-y-6">
           <p class="text-sm font-semibold tracking-[0.18em] text-primary">张明旸保护协会 · 官方网站</p>
           <h1 class="text-4xl font-extrabold leading-tight text-textDeep md:text-6xl">
-            世界规模最大的
+            世界规模最大的，
             <span class="text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
