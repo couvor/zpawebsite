@@ -4,6 +4,7 @@ import About from '../pages/About.vue'
 import Members from '../pages/Members.vue'
 import Activities from '../pages/Activities.vue'
 import Contact from '../pages/Contact.vue'
+import Partners from '../pages/Partners.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,6 +13,7 @@ const router = createRouter({
     { path: '/about', name: 'about', component: About },
     { path: '/members', name: 'members', component: Members },
     { path: '/activities', name: 'activities', component: Activities },
+    { path: '/partners', name: 'partners', component: Partners },
     { path: '/contact', name: 'contact', component: Contact }
   ],
   scrollBehavior() {

@@ -34,6 +34,7 @@ const navItems = [
   { label: '协会介绍', to: '/about' },
   { label: '成员', to: '/members' },
   { label: '活动', to: '/activities' },
+  { label: '合作', to: '/partners' },
   { label: '联系', to: '/contact' }
 ]
 

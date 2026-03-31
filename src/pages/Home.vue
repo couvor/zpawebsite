@@ -8,8 +8,8 @@
         <div class="relative max-w-3xl space-y-6">
           <p class="text-sm font-semibold tracking-[0.18em] text-primary">张明旸保护协会 · 官方网站</p>
           <h1 class="text-4xl font-extrabold leading-tight text-textDeep md:text-6xl">
-            用柔和但坚定的方式，
-            <span class="text-primary">守护张明旸</span>
+            世界规模最大的
+            <span class="text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
             我们连接关注者、志愿者与行动者，持续记录、倡导、共创支持网络，让每一次发声都更有力量。
