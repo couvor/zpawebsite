@@ -35,7 +35,7 @@ import { Motion } from '@motionone/vue'
 import RevealBlock from '../components/RevealBlock.vue'
 
 const members = [
-  { name: '陈一鸣', role: '发起人', desc: '负责整体方向与公共叙事框架设计。' },
+  { name: '张明旸', role: '首席科学家', desc: '负责协会科研与前沿科技探索' },
   { name: '林知夏', role: '活动统筹', desc: '协调线下活动与志愿者排班执行。' },
   { name: '周安然', role: '内容编辑', desc: '完成事实核验、长文整理与发布节奏管理。' },
   { name: '许星河', role: '社群支持', desc: '维护成员沟通氛围，关注反馈与心理支持。' },
