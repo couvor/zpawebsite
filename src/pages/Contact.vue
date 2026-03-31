@@ -13,9 +13,8 @@
         <article class="glass-card space-y-4 p-7">
           <h2 class="text-2xl font-bold">联系方式</h2>
           <ul class="space-y-3 text-zinc-600">
-            <li><span class="font-semibold text-textDeep">邮箱：</span>hello@protect-zmy.org</li>
-            <li><span class="font-semibold text-textDeep">微信：</span>zmy-protect</li>
-            <li><span class="font-semibold text-textDeep">QQ 群：</span>8257 2301</li>
+            <li><span class="font-semibold text-textDeep">邮箱：</span>offcial@couvor.cyou</li>
+            <li><span class="font-semibold text-textDeep">企业微信：张明旸保护协会</span></li>
           </ul>
 
           <div class="flex gap-3 pt-2">
