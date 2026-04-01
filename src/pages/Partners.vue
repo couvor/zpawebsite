@@ -45,10 +45,11 @@
             <div v-for="partner in academicPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
               <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 flex-1">
-                  <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1" />
-                  <h4 class="font-semibold text-textDeep">{{ partner.name }}</h4>
+                  <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
+                  <a v-if="partner.website" :href="partner.website" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline transition">{{ partner.name }}</a>
+                  <h4 v-else class="font-semibold text-textDeep">{{ partner.name }}</h4>
                 </div>
-                <span class="text-2xl ml-2">{{ partner.icon }}</span>
+                <span class="text-2xl ml-2 flex-shrink-0">{{ partner.icon }}</span>
               </div>
               <p class="text-sm text-zinc-600">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-primary">{{ partner.focus }}</p>
@@ -65,8 +66,12 @@
           <div class="grid gap-4 md:grid-cols-2">
             <div v-for="partner in industryPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
               <div class="mb-4 flex items-center justify-between">
-                <h4 class="font-semibold text-textDeep">{{ partner.name }}</h4>
-                <span class="text-2xl">{{ partner.icon }}</span>
+                <div class="flex items-center gap-3 flex-1">
+                  <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
+                  <a v-if="partner.website" :href="partner.website" target="_blank" rel="noopener noreferrer" class="font-semibold text-highlight hover:underline transition">{{ partner.name }}</a>
+                  <h4 v-else class="font-semibold text-textDeep">{{ partner.name }}</h4>
+                </div>
+                <span class="text-2xl flex-shrink-0">{{ partner.icon }}</span>
               </div>
               <p class="text-sm text-zinc-600">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-highlight">{{ partner.focus }}</p>
@@ -83,8 +88,12 @@
           <div class="grid gap-4 md:grid-cols-2">
             <div v-for="partner in ngoPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
               <div class="mb-4 flex items-center justify-between">
-                <h4 class="font-semibold text-textDeep">{{ partner.name }}</h4>
-                <span class="text-2xl">{{ partner.icon }}</span>
+                <div class="flex items-center gap-3 flex-1">
+                  <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
+                  <a v-if="partner.website" :href="partner.website" target="_blank" rel="noopener noreferrer" class="font-semibold text-green-600 hover:underline transition">{{ partner.name }}</a>
+                  <h4 v-else class="font-semibold text-textDeep">{{ partner.name }}</h4>
+                </div>
+                <span class="text-2xl flex-shrink-0">{{ partner.icon }}</span>
               </div>
               <p class="text-sm text-zinc-600">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-green-600">{{ partner.focus }}</p>
@@ -150,51 +159,146 @@ const academicPartners = [
   {
     name: '北京大学',
     icon: '🎓',
-    logo: 'https://via.placeholder.com/48?text=PKU',
+    logo: '/src/assets/images/logos/pku-logo.svg',
+    website: 'https://www.pku.edu.cn',
     description: '在生物保护与可持续发展领域展开深度研究合作',
     focus: '研究 · 教育 · 知识交流'
   },
   {
     name: '清华大学',
     icon: '📚',
-    logo: 'https://via.placeholder.com/48?text=TsingHua',
+    logo: '/src/assets/images/logos/tsinghua-logo.svg',
+    website: 'https://www.tsinghua.edu.cn',
     description: '联合开展技术创新与数据分析项目',
     focus: '科技创新 · 数据应用'
   },
   {
     name: '复旦大学',
     icon: '🔬',
-    logo: 'https://via.placeholder.com/48?text=Fudan',
+    logo: '/src/assets/images/logos/fudan-logo.svg',
+    website: 'https://www.fudan.edu.cn',
     description: '协同推进野生动物保护的科学研究',
     focus: '基础研究 · 学术发布'
   },
   {
     name: '南京大学',
     icon: '🌍',
-    logo: 'https://via.placeholder.com/48?text=NJU',
+    logo: '/src/assets/images/logos/nju-logo.svg',
+    website: 'https://www.nju.edu.cn',
     description: '开展生态系统评估与保护战略研究',
     focus: '生态保护 · 战略规划'
   },
   {
     name: '浙江大学',
     icon: '🏫',
-    logo: 'https://via.placeholder.com/48?text=ZJU',
+    logo: '/src/assets/images/logos/zju-logo.svg',
+    website: 'https://www.zju.edu.cn',
     description: '在农业生态与野生动物保护领域展开创新研究',
     focus: '生态农业 · 野生动物管理'
   },
   {
     name: '西安电子科技大学',
     icon: '📡',
-    logo: 'https://via.placeholder.com/48?text=XIDIAN',
+    logo: '/src/assets/images/logos/xidian-logo.svg',
+    website: 'https://www.xidian.edu.cn',
     description: '运用先进遥感与信息技术支持生态监测',
     focus: '遥感监测 · 信息技术'
   },
   {
     name: '西安邮电大学',
     icon: '📞',
-    logo: 'https://via.placeholder.com/48?text=XUPT',
+    logo: '/src/assets/images/logos/xupt-logo.svg',
+    website: 'https://www.xupt.edu.cn',
     description: '通过信息通信技术助力保护工作的公众参与',
     focus: '通信技术 · 公众互动'
+  },
+  {
+    name: '西北大学',
+    icon: '🎓',
+    logo: '/src/assets/images/logos/nwu-logo.svg',
+    website: 'https://www.nwu.edu.cn',
+    description: '在生物多样性保护与生态文明研究方面展开深度合作',
+    focus: '生态研究 · 文明建设'
+  },
+  {
+    name: '陕西师范大学',
+    icon: '📚',
+    logo: '/src/assets/images/logos/snu-logo.svg',
+    website: 'https://www.snnu.edu.cn',
+    description: '联合开展环境教育与保护人才培养项目',
+    focus: '教育培养 · 人才输送'
+  },
+  {
+    name: '西北工业大学',
+    icon: '🔧',
+    logo: '/src/assets/images/logos/nput-logo.svg',
+    website: 'https://www.nwpu.edu.cn',
+    description: '运用高新技术支持生态监测与保护工程',
+    focus: '工程技术 · 科技创新'
+  },
+  {
+    name: '西安理工大学',
+    icon: '⚙️',
+    logo: '/src/assets/images/logos/xitu-logo.svg',
+    website: 'https://www.xaut.edu.cn',
+    description: '在水资源保护与生态修复技术研究中贡献力量',
+    focus: '水资源保护 · 生态修复'
+  },
+  {
+    name: '西安建筑科技大学',
+    icon: '🏗️',
+    logo: '/src/assets/images/logos/xarch-logo.svg',
+    website: 'https://www.xauat.edu.cn',
+    description: '推进生态建筑与绿色城市规划研究',
+    focus: '绿色建筑 · 城市规划'
+  },
+  {
+    name: '杭州电子科技大学',
+    icon: '💻',
+    logo: '/src/assets/images/logos/hdu-logo.svg',
+    website: 'https://www.hdu.edu.cn',
+    description: '在信息技术与人工智能支持保护工作中深入开展合作',
+    focus: 'AI应用 · 数据分析'
+  },
+  {
+    name: '山东大学',
+    icon: '🌐',
+    logo: '/src/assets/images/logos/sdu-logo.svg',
+    website: 'https://www.sdu.edu.cn',
+    description: '开展综合性的学科交叉保护研究项目',
+    focus: '学科交叉 · 综合研究'
+  },
+  {
+    name: '上海理工大学',
+    icon: '🔬',
+    logo: '/src/assets/images/logos/sit-logo.svg',
+    website: 'https://www.usst.edu.cn',
+    description: '在环保工程与能源可持续发展领域展开合作',
+    focus: '环保工程 · 能源创新'
+  },
+  {
+    name: '西北政法大学',
+    icon: '⚖️',
+    logo: '/src/assets/images/logos/xzfu-logo.svg',
+    website: 'https://www.nwupl.edu.cn',
+    description: '推进野生动物保护的法律制度研究与完善',
+    focus: '法律制度 · 政策研究'
+  },
+  {
+    name: '西安交通大学',
+    icon: '🚄',
+    logo: '/src/assets/images/logos/xjtu-logo.svg',
+    website: 'https://www.xjtu.edu.cn',
+    description: '在生物保护关键技术与系统工程领域展开协同创新',
+    focus: '系统工程 · 关键技术'
+  },
+  {
+    name: '河北工业大学',
+    icon: '⚙️',
+    logo: '/src/assets/images/logos/hebeu-logo.svg',
+    website: 'https://www.hebut.edu.cn',
+    description: '在生态环保工程与资源循环利用领域展开研究合作',
+    focus: '生态工程 · 循环经济'
   }
 ]
 
@@ -202,24 +306,32 @@ const industryPartners = [
   {
     name: '世界自然基金会(WWF)',
     icon: '🐼',
+    logo: '/src/assets/images/logos/wwf-logo.svg',
+    website: 'https://www.worldwildlife.org',
     description: '全球最大的独立环保组织，推进物种保护',
     focus: '国际合作 · 资源配置'
   },
   {
     name: 'TechForChange',
     icon: '💻',
+    logo: '/src/assets/images/logos/techforchange-logo.svg',
+    website: 'https://www.techforchange.org',
     description: '运用技术创新支持生态保护工作',
     focus: '技术支持 · 数字化转型'
   },
   {
     name: '绿色未来基金会',
     icon: '🌱',
+    logo: '/src/assets/images/logos/greenfuture-logo.svg',
+    website: 'https://www.greenfuture.org',
     description: '专注于可持续发展和环境保护投资',
     focus: '基金支持 · 项目融资'
   },
   {
     name: 'Conservation Media Lab',
     icon: '📺',
+    logo: '/src/assets/images/logos/cml-logo.svg',
+    website: 'https://www.conservationmedialab.org',
     description: '通过媒体和传播放大保护声音',
     focus: '传播 · 品牌建设'
   }
@@ -229,24 +341,32 @@ const ngoPartners = [
   {
     name: '国际自然保护联盟(IUCN)',
     icon: '🌐',
+    logo: '/src/assets/images/logos/iucn-logo.svg',
+    website: 'https://www.iucn.org',
     description: '全球最大的环保专业网络，制定保护标准',
     focus: '标准制定 · 政策倡议'
   },
   {
     name: '地球保护基金会',
     icon: '🌍',
+    logo: '/src/assets/images/logos/earthguard-logo.svg',
+    website: 'https://www.earthguard.org',
     description: '致力于保护地球生物多样性',
     focus: '多样性保护 · 社区参与'
   },
   {
     name: '野生救援(WildAid)',
     icon: '🦁',
+    logo: '/src/assets/images/logos/wildaid-logo.svg',
+    website: 'https://www.wildaid.org',
     description: '通过改变人类行为保护野生动物',
     focus: '行为改变 · 公众教育'
   },
   {
     name: '本地保护社区',
     icon: '👥',
+    logo: '/src/assets/images/logos/community-logo.svg',
+    website: '#',
     description: '与各地社区组织紧密合作，实现保护目标',
     focus: '社区赋能 · 本地行动'
   }
