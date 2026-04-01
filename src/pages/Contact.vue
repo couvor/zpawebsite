@@ -26,8 +26,8 @@
 
         <article class="glass-card p-7">
           <h2 class="text-2xl font-bold">微信二维码</h2>
-          <div class="mt-4 flex h-64 items-center justify-center rounded-3xl border border-dashed border-primary/35 bg-primaryBg text-center text-zinc-500">
-            <p>请替换为真实二维码图片<br />（建议尺寸 600x600）</p>
+          <div class="mt-4 flex h-64 items-center justify-center rounded-3xl border border-primary/20 bg-white">
+            <img src="/qrcodes/wechat-qr.svg" alt="微信二维码" class="h-56 w-56 rounded-lg" />
           </div>
         </article>
       </div>
