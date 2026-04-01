@@ -44,8 +44,11 @@
           <div class="grid gap-4 md:grid-cols-2">
             <div v-for="partner in academicPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
               <div class="mb-4 flex items-center justify-between">
-                <h4 class="font-semibold text-textDeep">{{ partner.name }}</h4>
-                <span class="text-2xl">{{ partner.icon }}</span>
+                <div class="flex items-center gap-3 flex-1">
+                  <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1" />
+                  <h4 class="font-semibold text-textDeep">{{ partner.name }}</h4>
+                </div>
+                <span class="text-2xl ml-2">{{ partner.icon }}</span>
               </div>
               <p class="text-sm text-zinc-600">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-primary">{{ partner.focus }}</p>
@@ -147,42 +150,49 @@ const academicPartners = [
   {
     name: '北京大学',
     icon: '🎓',
+    logo: 'https://via.placeholder.com/48?text=PKU',
     description: '在生物保护与可持续发展领域展开深度研究合作',
     focus: '研究 · 教育 · 知识交流'
   },
   {
     name: '清华大学',
     icon: '📚',
+    logo: 'https://via.placeholder.com/48?text=TsingHua',
     description: '联合开展技术创新与数据分析项目',
     focus: '科技创新 · 数据应用'
   },
   {
     name: '复旦大学',
     icon: '🔬',
+    logo: 'https://via.placeholder.com/48?text=Fudan',
     description: '协同推进野生动物保护的科学研究',
     focus: '基础研究 · 学术发布'
   },
   {
     name: '南京大学',
     icon: '🌍',
+    logo: 'https://via.placeholder.com/48?text=NJU',
     description: '开展生态系统评估与保护战略研究',
     focus: '生态保护 · 战略规划'
   },
   {
     name: '浙江大学',
     icon: '🏫',
+    logo: 'https://via.placeholder.com/48?text=ZJU',
     description: '在农业生态与野生动物保护领域展开创新研究',
     focus: '生态农业 · 野生动物管理'
   },
   {
     name: '西安电子科技大学',
     icon: '📡',
+    logo: 'https://via.placeholder.com/48?text=XIDIAN',
     description: '运用先进遥感与信息技术支持生态监测',
     focus: '遥感监测 · 信息技术'
   },
   {
     name: '西安邮电大学',
     icon: '📞',
+    logo: 'https://via.placeholder.com/48?text=XUPT',
     description: '通过信息通信技术助力保护工作的公众参与',
     focus: '通信技术 · 公众互动'
   }
