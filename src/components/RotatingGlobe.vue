@@ -1,7 +1,13 @@
 <template>
-  <div class="relative w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden rounded-2xl bg-transparent">
-    <div ref="globeContainer" class="w-full h-full"></div>
-    <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl z-10">
+  <div class="relative w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden rounded-2xl bg-[#05060a]">
+    <div class="absolute inset-0 globe-bg"></div>
+    <div class="absolute inset-0">
+      <div class="halo-ring"></div>
+    </div>
+
+    <div ref="globeContainer" class="relative z-10 w-full h-full"></div>
+
+    <div v-if="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-black/20 rounded-2xl">
       <div class="text-white text-center">
         <div class="mb-2 text-sm">loading globe...</div>
         <div class="text-xs text-gray-300">{{ loadingStatus }}</div>
@@ -18,120 +24,158 @@ const globeContainer = ref(null)
 const isLoading = ref(true)
 const loadingStatus = ref('initializing')
 
-let scene, camera, renderer, globe, animationId
+let scene
+let camera
+let renderer
+let animationId
+
+let globeGroup
+let coreMesh
+let wireMesh
+let pointsMesh
+let outerGlowMesh
+let stars
+
+let onMouseMove
+let onResize
 
 const setupGlobe = async () => {
   try {
     const container = globeContainer.value
     if (!container) {
-      console.error('[Globe] Container not found')
       loadingStatus.value = 'container not found'
       return
     }
 
-    // Wait for container to have dimensions
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 80))
 
     const width = container.clientWidth
     const height = container.clientHeight
 
-    console.log('[Globe] Container dimensions:', width, 'x', height)
-
     if (width === 0 || height === 0) {
-      console.error('[Globe] Container has no dimensions')
       loadingStatus.value = 'container has no dimensions'
       return
     }
 
-    // Scene setup
     loadingStatus.value = 'creating scene'
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x000000)
 
-    // Camera setup
-    camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000)
-    camera.position.z = 2.5
+    camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100)
+    camera.position.z = 3.2
 
-    // Renderer setup
     loadingStatus.value = 'creating renderer'
-    renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: false
-    })
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.outputColorSpace = THREE.SRGBColorSpace
     container.appendChild(renderer.domElement)
 
-    // Load Earth textures from local static assets
-    loadingStatus.value = 'loading Earth texture'
-    const textureLoader = new THREE.TextureLoader()
+    loadingStatus.value = 'building globe'
 
-    const earthTexture = await new Promise((resolve, reject) => {
-      textureLoader.load(
-        '/textures/earth-daymap.jpg',
-        resolve,
-        undefined,
-        reject
-      )
-    })
+    globeGroup = new THREE.Group()
+    scene.add(globeGroup)
 
-    // Load normal map for bump effect
-    loadingStatus.value = 'loading normal map'
-    let normalMap
-    try {
-      normalMap = await new Promise((resolve) => {
-        textureLoader.load(
-          '/textures/earth-normal.jpg',
-          resolve,
-          undefined,
-          () => resolve(null)
-        )
+    const globeGeometry = new THREE.SphereGeometry(1, 96, 96)
+
+    coreMesh = new THREE.Mesh(
+      globeGeometry,
+      new THREE.MeshBasicMaterial({
+        color: 0x101725,
+        transparent: true,
+        opacity: 0.7
       })
-    } catch (err) {
-      normalMap = null
+    )
+    globeGroup.add(coreMesh)
+
+    wireMesh = new THREE.Mesh(
+      globeGeometry,
+      new THREE.MeshBasicMaterial({
+        color: 0x8fb6ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.28
+      })
+    )
+    globeGroup.add(wireMesh)
+
+    pointsMesh = new THREE.Points(
+      globeGeometry,
+      new THREE.PointsMaterial({
+        color: 0xdbe8ff,
+        size: 0.012,
+        transparent: true,
+        opacity: 0.9,
+        depthWrite: false
+      })
+    )
+    globeGroup.add(pointsMesh)
+
+    outerGlowMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1.08, 96, 96),
+      new THREE.MeshBasicMaterial({
+        color: 0x7ea7ff,
+        transparent: true,
+        opacity: 0.1,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    )
+    globeGroup.add(outerGlowMesh)
+
+    const starsGeometry = new THREE.BufferGeometry()
+    const starCount = 1300
+    const starPositions = new Float32Array(starCount * 3)
+
+    for (let i = 0; i < starCount * 3; i += 3) {
+      const radius = 8 + Math.random() * 12
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.acos(2 * Math.random() - 1)
+
+      starPositions[i] = radius * Math.sin(phi) * Math.cos(theta)
+      starPositions[i + 1] = radius * Math.cos(phi)
+      starPositions[i + 2] = radius * Math.sin(phi) * Math.sin(theta)
     }
 
-    // Create sphere geometry
-    loadingStatus.value = 'creating geometry'
-    const geometry = new THREE.SphereGeometry(1, 256, 256)
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
 
-    // Create material
-    loadingStatus.value = 'creating material'
-    const material = new THREE.MeshPhongMaterial({
-      map: earthTexture,
-      normalMap: normalMap,
-      shininess: 10,
-      emissive: 0x333333,
-      emissiveIntensity: 0.2
-    })
+    stars = new THREE.Points(
+      starsGeometry,
+      new THREE.PointsMaterial({
+        color: 0x8ea3d8,
+        size: 0.015,
+        transparent: true,
+        opacity: 0.5,
+        depthWrite: false
+      })
+    )
+    scene.add(stars)
 
-    globe = new THREE.Mesh(geometry, material)
-    scene.add(globe)
-
-    // Add lighting
-    loadingStatus.value = 'setting up lights'
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7)
+    const ambientLight = new THREE.AmbientLight(0xb7cbff, 0.75)
     scene.add(ambientLight)
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1)
-    sunLight.position.set(5, 3, 5)
-    scene.add(sunLight)
+    const keyLight = new THREE.PointLight(0xa7c0ff, 1.8, 18)
+    keyLight.position.set(2.6, 1.4, 3.2)
+    scene.add(keyLight)
 
-    // Setup interactivity
-    let targetRotX = 0
-    let targetRotY = 0
-    let currentRotX = 0.3
-    let currentRotY = -1.8
+    const rimLight = new THREE.PointLight(0x6f8fff, 0.9, 16)
+    rimLight.position.set(-3.4, -1.6, -2.3)
+    scene.add(rimLight)
 
-    const onMouseMove = (e) => {
-      const x = (e.clientX / window.innerWidth) - 0.5
-      const y = (e.clientY / window.innerHeight) - 0.5
-      targetRotX = y * Math.PI * 0.3
-      targetRotY = x * Math.PI * 0.5
+    let targetRotX = 0.12
+    let targetRotY = -0.35
+    let currentRotX = 0.12
+    let currentRotY = -0.35
+
+    onMouseMove = (e) => {
+      const x = e.clientX / window.innerWidth - 0.5
+      const y = e.clientY / window.innerHeight - 0.5
+      targetRotX = y * 0.55
+      targetRotY = x * 0.9
     }
 
-    const onResize = () => {
-      if (!container || !container.clientWidth) return
+    onResize = () => {
+      if (!container.clientWidth || !container.clientHeight) return
       const w = container.clientWidth
       const h = container.clientHeight
       camera.aspect = w / h
@@ -142,48 +186,60 @@ const setupGlobe = async () => {
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('resize', onResize)
 
-    // Animation loop
     loadingStatus.value = 'ready'
-    
+
     const animate = () => {
       animationId = requestAnimationFrame(animate)
 
-      // Smooth rotation
-      currentRotX += (targetRotX - currentRotX) * 0.05
-      currentRotY += (targetRotY - currentRotY) * 0.05
+      currentRotX += (targetRotX - currentRotX) * 0.04
+      currentRotY += (targetRotY - currentRotY) * 0.04
 
-      // Auto-rotation
-      globe.rotation.x = currentRotX
-      globe.rotation.y = currentRotY + Date.now() * 0.00005
+      const t = performance.now() * 0.001
+
+      globeGroup.rotation.x = currentRotX
+      globeGroup.rotation.y = currentRotY + t * 0.12
+
+      outerGlowMesh.rotation.y -= 0.0006
+      stars.rotation.y += 0.00012
 
       renderer.render(scene, camera)
     }
 
     animate()
     isLoading.value = false
-
-    console.log('[Globe] Setup complete!')
-
-    // Store cleanup
-    const cleanup = () => {
-      console.log('[Globe] Cleanup')
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('resize', onResize)
-      if (animationId) cancelAnimationFrame(animationId)
-      geometry.dispose()
-      material.dispose()
-      renderer.dispose()
-      container.removeChild(renderer.domElement)
-    }
-
-    if (container) {
-      container._cleanup = cleanup
-    }
-
   } catch (err) {
     console.error('[Globe] Setup error:', err)
-    loadingStatus.value = 'error: ' + err.message
+    loadingStatus.value = `error: ${err.message}`
     isLoading.value = false
+  }
+}
+
+const cleanupGlobe = () => {
+  if (onMouseMove) window.removeEventListener('mousemove', onMouseMove)
+  if (onResize) window.removeEventListener('resize', onResize)
+
+  if (animationId) cancelAnimationFrame(animationId)
+
+  if (scene) {
+    scene.traverse((obj) => {
+      if (obj.geometry) obj.geometry.dispose()
+
+      if (obj.material) {
+        if (Array.isArray(obj.material)) {
+          obj.material.forEach((m) => m.dispose())
+        } else {
+          obj.material.dispose()
+        }
+      }
+    })
+  }
+
+  if (renderer) {
+    renderer.dispose()
+    const canvas = renderer.domElement
+    if (canvas?.parentNode) {
+      canvas.parentNode.removeChild(canvas)
+    }
   }
 }
 
@@ -192,9 +248,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (globeContainer.value && globeContainer.value._cleanup) {
-    globeContainer.value._cleanup()
-  }
+  cleanupGlobe()
 })
 </script>
 
@@ -204,5 +258,38 @@ onUnmounted(() => {
   height: 100% !important;
   display: block !important;
   border-radius: 1rem;
+}
+
+.globe-bg {
+  background:
+    radial-gradient(42% 42% at 50% 48%, rgba(120, 152, 235, 0.18), rgba(5, 6, 10, 0) 74%),
+    radial-gradient(85% 72% at 50% 50%, rgba(9, 12, 20, 0.75), rgba(5, 6, 10, 1) 100%);
+}
+
+.halo-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(72vw, 510px);
+  height: min(72vw, 510px);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  border: 1px solid rgba(155, 183, 255, 0.18);
+  box-shadow:
+    0 0 120px rgba(114, 145, 240, 0.12),
+    inset 0 0 90px rgba(145, 170, 255, 0.05);
+  animation: haloPulse 6.8s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: translate(-50%, -50%) scale(0.985);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
 }
 </style>

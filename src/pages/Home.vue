@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="space-y-20">
     <RevealBlock>
       <div class="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/80 p-10 shadow-card md:p-16">
@@ -12,7 +12,7 @@
             <span class="text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
-            让"附近"回归，保护喜欢无所事事的人，保护喜欢在图书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，ZPA在你身后。   -- ZPA执行会长尹梓旭
+            让"附近"回归，保护喜欢无所事事的人，保护喜欢在图书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，ZPA在你身后。<span class="text-primary"> -- ZPA执行会长尹梓旭</span>
           </p>
           <div class="flex flex-wrap gap-3">
             <RouterLink to="/activities" class="rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">查看最新活动</RouterLink>
