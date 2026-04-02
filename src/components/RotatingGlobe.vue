@@ -29,14 +29,17 @@ let animationId
 let globeGroup
 let pointsMesh
 let arcGroup
+let flowRunners = []
 
 let currentRotX = 0.32
 let currentRotY = -0.58
 let targetRotX = 0.32
 let targetRotY = -0.58
+let targetCameraZ = 3.14
 
 let onMouseMove
 let onResize
+let onWheel
 
 const disposableGeometries = []
 const disposableMaterials = []
@@ -57,9 +60,30 @@ const toCartesian = (latDeg, lonDeg, radius) => {
   return new THREE.Vector3(x, y, z)
 }
 
-const buildPointsGlobe = () => {
-  const radius = 1.42
-  const count = 24000
+const loadLandMask = async () => {
+  const img = await new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = reject
+    image.src = '/textures/earth-daymap.jpg'
+  })
+
+  const canvas = document.createElement('canvas')
+  const width = 1024
+  const height = 512
+  canvas.width = width
+  canvas.height = height
+
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0, width, height)
+  const { data } = ctx.getImageData(0, 0, width, height)
+
+  return { data, width, height }
+}
+
+const buildPointsGlobe = (landMask) => {
+  const radius = 1.26
+  const count = 98000
 
   const positions = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
@@ -69,27 +93,38 @@ const buildPointsGlobe = () => {
   const colorPink = new THREE.Color('#ff63c7')
   const colorOrange = new THREE.Color('#ff8463')
   const white = new THREE.Color('#fbfbff')
+  const oceanGray = new THREE.Color('#cfd4de')
 
   const tempColor = new THREE.Color()
 
   for (let i = 0; i < count; i += 1) {
-    const u = Math.random()
-    const v = Math.random()
+    const uRandom = Math.random()
+    const vRandom = Math.random()
 
-    const theta = 2 * Math.PI * u
-    const phi = Math.acos(2 * v - 1)
+    const theta = 2 * Math.PI * uRandom
+    const phi = Math.acos(2 * vRandom - 1)
 
     const x = Math.sin(phi) * Math.cos(theta)
     const y = Math.cos(phi)
     const z = Math.sin(phi) * Math.sin(theta)
 
-    const cluster = Math.sin(x * 6.2) + Math.cos(y * 8.3) + Math.sin(z * 5.6)
-    const sparseMask = Math.random() < 0.15
-    const shouldUse = cluster > 0.45 || sparseMask
+    const u = 0.5 + Math.atan2(z, x) / (2 * Math.PI)
+    const v = 0.5 - Math.asin(y) / Math.PI
+
+    const px = Math.min(landMask.width - 1, Math.max(0, Math.floor(u * (landMask.width - 1))))
+    const py = Math.min(landMask.height - 1, Math.max(0, Math.floor(v * (landMask.height - 1))))
+    const pIdx = (py * landMask.width + px) * 4
+
+    const rTex = landMask.data[pIdx]
+    const gTex = landMask.data[pIdx + 1]
+    const bTex = landMask.data[pIdx + 2]
+
+    const isLand = (gTex > bTex * 0.9 && rTex > bTex * 0.65) || (rTex + gTex > bTex * 1.62)
 
     const idx = i * 3
 
-    if (!shouldUse) {
+    if (!isLand) {
+      const showOceanPoint = Math.random() < 0.22
       positions[idx] = 999
       positions[idx + 1] = 999
       positions[idx + 2] = 999
@@ -100,7 +135,7 @@ const buildPointsGlobe = () => {
       continue
     }
 
-    const r = radius + (Math.random() - 0.5) * 0.012
+    const r = radius + (Math.random() - 0.5) * 0.01
 
     positions[idx] = x * r
     positions[idx + 1] = y * r
@@ -269,14 +304,14 @@ const setupGlobe = async () => {
 
     arcGroup = new THREE.Group()
     routes.forEach((route) => {
-    arcGroup.add(
-      buildArc({
+      arcGroup.add(
+        buildArc({
           from: xian,
           to: route.to,
           color: route.color,
           lift: route.lift
-      })
-    )
+        })
+      )
     })
 
     globeGroup.add(arcGroup)
@@ -308,8 +343,13 @@ const setupGlobe = async () => {
       renderer.setSize(w, h)
     }
 
+    onWheel = (e) => {
+      targetCameraZ = THREE.MathUtils.clamp(targetCameraZ + e.deltaY * 0.0016, 2.75, 4.2)
+    }
+
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('resize', onResize)
+    container.addEventListener('wheel', onWheel, { passive: true })
 
     loadingStatus.value = 'ready'
 
@@ -322,11 +362,18 @@ const setupGlobe = async () => {
       const t = performance.now() * 0.001
 
       globeGroup.rotation.x = currentRotX
-      globeGroup.rotation.y = currentRotY + t * 0.04
+      globeGroup.rotation.y = currentRotY + t * 0.062
+      camera.position.z += (targetCameraZ - camera.position.z) * 0.08
 
       if (pointsMesh?.material) {
-        pointsMesh.material.opacity = 0.88 + Math.sin(t * 1.6) * 0.05
+        pointsMesh.material.opacity = 0.9 + Math.sin(t * 1.7) * 0.04
       }
+
+      flowRunners.forEach((runner) => {
+        const p = (runner.offset + t * runner.speed) % 1
+        runner.mesh.position.copy(runner.curve.getPoint(p))
+        runner.mesh.material.opacity = 0.65 + 0.35 * Math.sin((p * Math.PI * 2) + t * 2.2)
+      })
 
       renderer.render(scene, camera)
     }
@@ -343,8 +390,11 @@ const setupGlobe = async () => {
 const cleanupGlobe = () => {
   if (onMouseMove) window.removeEventListener('mousemove', onMouseMove)
   if (onResize) window.removeEventListener('resize', onResize)
+  if (onWheel && globeContainer.value) globeContainer.value.removeEventListener('wheel', onWheel)
 
   if (animationId) cancelAnimationFrame(animationId)
+
+  flowRunners = []
 
   disposableGeometries.forEach((g) => g.dispose())
   disposableMaterials.forEach((m) => m.dispose())
