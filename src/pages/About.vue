@@ -6,6 +6,7 @@
         <h1 class="text-4xl font-extrabold md:text-5xl">协会介绍</h1>
         <p class="max-w-3xl text-lg leading-relaxed text-zinc-600">
           让"附近"回归，保护喜欢无所事事的人，保护喜欢在四书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，可以，ZPA在你身后。
+        </p>
       </div>
     </RevealBlock>
 
