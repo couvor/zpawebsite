@@ -12,13 +12,15 @@
 
 <script setup>
 import { onMounted, ref, onUnmounted } from 'vue'
-import * as THREE from 'three'
+import Gio from 'giojs'
 
 const globeContainer = ref(null)
 const isLoading = ref(true)
 const loadingStatus = ref('initializing')
 
-let scene, camera, renderer, globe, atmosphere, animationId, cleanup
+let globe = null
+let animationId = null
+let cleanup = null
 
 const setupGlobe = async () => {
   try {
@@ -43,195 +45,57 @@ const setupGlobe = async () => {
       return
     }
 
-    // Scene setup
-    loadingStatus.value = 'creating scene'
-    scene = new THREE.Scene()
-    scene.background = null  // 透明背景
-    scene.fog = null  // 移除雾以保留亮度
-
-    // Camera setup
-    camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000)
-    camera.position.z = 2.2
-
-    // Renderer setup
-    loadingStatus.value = 'creating renderer'
-    renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: true,
-      precision: 'highp'
+    // Initialize Gio globe
+    loadingStatus.value = 'initializing Gio globe'
+    globe = new Gio.Controller({
+      container: container,
+      enableStats: false
     })
-    renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.setClearColor(0x000000, 0)  // 透明背景
-    renderer.outputColorSpace = THREE.SRGBColorSpace
-    renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.2
+
+    // Configure globe appearance
+    loadingStatus.value = 'configuring globe'
     
-    container.appendChild(renderer.domElement)
-    console.log('[Globe] Renderer created')
-
-    // Load textures - with detailed logging
-    loadingStatus.value = 'loading Earth texture'
-    console.log('[Globe] Loading Earth texture from CDN')
-    
-    const textureLoader = new THREE.TextureLoader()
-    
-    let earthTexture = null
-    let bumpTexture = null
-
-    try {
-      earthTexture = await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Texture load timeout')), 30000)
-        
-        textureLoader.load(
-          'https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg',
-          (texture) => {
-            clearTimeout(timeout)
-            texture.colorSpace = THREE.SRGBColorSpace
-            console.log('[Globe] Earth texture loaded successfully')
-            resolve(texture)
-          },
-          (progress) => {
-            console.log('[Globe] Earth texture loading:', Math.round(progress.loaded / progress.total * 100) + '%')
-          },
-          (err) => {
-            clearTimeout(timeout)
-            console.warn('[Globe] Earth texture load failed:', err)
-            reject(err)
-          }
-        )
-      })
-    } catch (err) {
-      console.warn('[Globe] Using fallback - Earth texture failed:', err.message)
-      earthTexture = null
-    }
-
-    loadingStatus.value = 'loading bump map'
-    try {
-      bumpTexture = await new Promise((resolve) => {
-        const timeout = setTimeout(() => resolve(null), 15000)
-        textureLoader.load(
-          'https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png',
-          (texture) => {
-            clearTimeout(timeout)
-            console.log('[Globe] Bump texture loaded')
-            resolve(texture)
-          },
-          undefined,
-          (err) => {
-            clearTimeout(timeout)
-            console.warn('[Globe] Bump texture load failed:', err)
-            resolve(null)
-          }
-        )
-      })
-    } catch (err) {
-      bumpTexture = null
-    }
-
-    // Create sphere geometry with high resolution
-    loadingStatus.value = 'creating geometry'
-    const geometry = new THREE.SphereGeometry(1, 128, 128)
-
-    // Create material
-    loadingStatus.value = 'creating material'
-    let material
-    
-    if (earthTexture) {
-      console.log('[Globe] Creating material with Earth texture')
-      material = new THREE.MeshPhongMaterial({
-        map: earthTexture,
-        bumpMap: bumpTexture || undefined,
-        bumpScale: bumpTexture ? 0.08 : 0,
-        shininess: 15,
-        emissive: 0x333333,
-        emissiveIntensity: 0.3,
-        wireframe: false,
-        side: THREE.FrontSide
-      })
-    } else {
-      console.log('[Globe] Creating fallback material (no texture)')
-      material = new THREE.MeshPhongMaterial({
-        color: 0x2694e8,
-        emissive: 0x112244,
-        shininess: 2,
-        wireframe: false
-      })
-    }
-
-    globe = new THREE.Mesh(geometry, material)
-    scene.add(globe)
-    console.log('[Globe] Globe mesh created')
-
-    // Add atmosphere
-    loadingStatus.value = 'creating atmosphere'
-    const atmosphereGeometry = new THREE.SphereGeometry(1.08, 64, 64)
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        color: { value: new THREE.Color(0x5ba3ff) },
-        scale: { value: 1.0 }
-      },
-      vertexShader: `
-        varying vec3 vNormal;
-        void main() {
-          vNormal = normalize(normalMatrix * normal);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 color;
-        varying vec3 vNormal;
-        void main() {
-          float intensity = pow(0.8 - dot(vNormal, vec3(0, 0, 1.0)), 2.0);
-          gl_FragColor = vec4(color, intensity * 0.4);
-        }
-      `,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      side: THREE.BackSide
+    // Set initial position to show China
+    globe.setStyle({
+      brightness: 0.5
     })
-    atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial)
-    scene.add(atmosphere)
 
-    // Lighting
-    loadingStatus.value = 'setting up lights'
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
-    scene.add(ambientLight)
+    // Set meridians and parallels
+    globe.configure({
+      cameraAutoOrbit: false,
+      lightIntensity: 1.2,
+      lightColor: 0xffffff,
+      ambientLight: 0x8899aa,
+      ambientLightIntensity: 1.1
+    })
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.5)
-    sunLight.position.set(8, 5, 8)
-    sunLight.castShadow = false
-    scene.add(sunLight)
+    // Configure initial view
+    globe.setInitialScale({
+      scaleFactor: 1.2,
+      initLatitude: 30,     // Position to show China
+      initLongitude: 100
+    })
 
-    const rimLight = new THREE.DirectionalLight(0xadc8e1, 1.0)
-    rimLight.position.set(-6, -3, -6)
-    scene.add(rimLight)
-
-    const topLight = new THREE.DirectionalLight(0xd4e7ff, 0.6)
-    topLight.position.set(0, 10, 0)
-    scene.add(topLight)
-
-    console.log('[Globe] Lighting setup complete')
-
-    // Setup interactivity
+    // Setup mouse controls
+    loadingStatus.value = 'setting up controls'
     let targetRotX = 0
     let targetRotY = 0
-    // 初始位置指向中国，并显示北半球
-    let currentRotX = Math.PI * 0.3  // 向下倾斜以显示北半球
-    let currentRotY = -Math.PI * 0.6  // 指向中国
+    let currentRotX = 0.5
+    let currentRotY = -1.8
 
     const onMouseMove = (e) => {
-      targetRotX = (e.clientY / window.innerHeight - 0.5) * Math.PI * 0.4
-      targetRotY = (e.clientX / window.innerWidth - 0.5) * Math.PI * 0.8
+      targetRotX = (e.clientY / window.innerHeight - 0.5) * 0.5
+      targetRotY = (e.clientX / window.innerWidth - 0.5) * 1.0
     }
 
     const onResize = () => {
       if (!container || !container.clientWidth) return
       const w = container.clientWidth
       const h = container.clientHeight
-      camera.aspect = w / h
-      camera.updateProjectionMatrix()
-      renderer.setSize(w, h)
+      if (globe && globe.canvases && globe.canvases.webGLCanvas) {
+        globe.canvases.webGLCanvas.width = w
+        globe.canvases.webGLCanvas.height = h
+      }
     }
 
     window.addEventListener('mousemove', onMouseMove)
@@ -239,25 +103,22 @@ const setupGlobe = async () => {
 
     // Animation loop
     loadingStatus.value = 'ready'
-    let frameCount = 0
-
+    
     const animate = () => {
       animationId = requestAnimationFrame(animate)
-      frameCount++
 
       // Smooth rotation following mouse
       currentRotX += (targetRotX - currentRotX) * 0.08
       currentRotY += (targetRotY - currentRotY) * 0.08
 
-      // Auto-rotation - faster speed
-      globe.rotation.x = currentRotX
-      globe.rotation.y = currentRotY + Date.now() * 0.0004
-
-      if (atmosphere) {
-        atmosphere.rotation.copy(globe.rotation)
+      // Auto-rotation
+      if (globe && globe.scene) {
+        const autoRotateSpeed = 0.0004
+        const baseRotation = currentRotY + Date.now() * autoRotateSpeed
+        
+        globe.scene.rotation.x = currentRotX
+        globe.scene.rotation.y = baseRotation
       }
-
-      renderer.render(scene, camera)
     }
 
     animate()
@@ -271,12 +132,8 @@ const setupGlobe = async () => {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('resize', onResize)
       if (animationId) cancelAnimationFrame(animationId)
-      if (renderer && container && container.contains(renderer.domElement)) {
-        geometry.dispose()
-        material.dispose()
-        atmosphereMaterial.dispose()
-        renderer.dispose()
-        container.removeChild(renderer.domElement)
+      if (globe) {
+        globe.destroy()
       }
     }
 
