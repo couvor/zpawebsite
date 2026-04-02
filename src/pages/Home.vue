@@ -12,7 +12,7 @@
             <span class="text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
-            我们连接关注者、志愿者与行动者，持续记录、倡导、共创支持网络，让每一次发声都更有力量。
+            让"附近"回归，保护喜欢无所事事的人，保护喜欢在四书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，ZPA在你身后。 -- ZPA执行会长尹梓旭
           </p>
           <div class="flex flex-wrap gap-3">
             <RouterLink to="/activities" class="rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">查看最新活动</RouterLink>
