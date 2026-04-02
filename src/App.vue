@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-primaryBg/70 via-white to-mist">
+  <div class="stripe-shell min-h-screen">
     <SiteHeader />
-    <main class="mx-auto w-full max-w-6xl px-5 pb-16 pt-10 md:px-8">
+    <main class="mx-auto w-full max-w-6xl px-5 pb-20 pt-10 md:px-8">
       <RouterView />
     </main>
     <SiteFooter />

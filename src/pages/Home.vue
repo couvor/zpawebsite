@@ -1,22 +1,22 @@
 <template>
-  <section class="space-y-20">
+  <section class="space-y-16">
     <RevealBlock>
-      <div class="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/80 p-10 shadow-card md:p-16">
-        <div class="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-primary/25 blur-3xl"></div>
-        <div class="absolute -bottom-20 left-8 h-72 w-72 rounded-full bg-highlight/30 blur-3xl"></div>
+      <div class="stripe-panel relative overflow-hidden p-10 md:p-14">
+        <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl"></div>
+        <div class="absolute -bottom-16 left-8 h-56 w-56 rounded-full bg-highlight/20 blur-3xl"></div>
 
         <div class="relative max-w-3xl space-y-6">
-          <p class="text-sm font-semibold tracking-[0.18em] text-primary">张明旸保护协会官网</p>
-          <h1 class="text-4xl font-extrabold leading-tight text-textDeep md:text-6xl">
-            世界规模最大的
-            <span class="text-primary">张明旸保护组织</span>
+          <p class="stripe-kicker">ZPA Official Site</p>
+          <h1 class="text-4xl font-extrabold leading-tight md:text-6xl">
+            用长期协作，守护每一位
+            <span class="text-primary">仍在坚持理想的人</span>
           </h1>
-          <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
-            让"附近"回归，保护喜欢无所事事的人，保护喜欢在图书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，ZPA在你身后。<span class="text-primary"> -- ZPA执行会长尹梓旭</span>
+          <p class="max-w-2xl text-lg leading-relaxed text-slateSoft">
+            让“附近”回归，保护喜欢无所事事的人，保护在图书馆读无用之书的人，保护用理想对抗现实的人。
           </p>
           <div class="flex flex-wrap gap-3">
-            <RouterLink to="/activities" class="rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">查看最新活动</RouterLink>
-            <RouterLink to="/about" class="rounded-2xl border border-primary/30 bg-white px-6 py-3 font-semibold text-primary transition hover:bg-primary/10">了解协会理念</RouterLink>
+            <RouterLink to="/activities" class="stripe-btn">查看最新活动</RouterLink>
+            <RouterLink to="/about" class="stripe-btn-light">了解协会理念</RouterLink>
           </div>
         </div>
       </div>
@@ -24,29 +24,32 @@
 
     <RevealBlock :delay="0.1">
       <div class="grid gap-4 md:grid-cols-4">
-        <article v-for="point in reasons" :key="point.title" class="glass-card p-6">
-          <p class="mb-3 text-sm font-semibold tracking-widest text-primary">WHY</p>
+        <article v-for="point in reasons" :key="point.title" class="stripe-soft p-6">
+          <p class="stripe-kicker mb-2">WHY</p>
           <h3 class="text-xl font-bold">{{ point.title }}</h3>
-          <p class="mt-3 text-sm leading-relaxed text-zinc-600">{{ point.text }}</p>
+          <p class="mt-3 text-sm leading-relaxed text-slateSoft">{{ point.text }}</p>
         </article>
       </div>
     </RevealBlock>
 
     <RevealBlock :delay="0.2">
       <div class="space-y-6">
-        <h2 class="text-3xl font-bold md:text-4xl">协会理念</h2>
+        <div class="flex items-end justify-between">
+          <h2 class="text-3xl font-bold md:text-4xl">协会理念</h2>
+          <RouterLink to="/about" class="stripe-link">了解更多 →</RouterLink>
+        </div>
         <div class="grid gap-5 md:grid-cols-3">
-          <div v-for="idea in ideas" :key="idea.title" class="glass-card p-7 transition hover:-translate-y-1 hover:shadow-glow">
+          <div v-for="idea in ideas" :key="idea.title" class="stripe-soft p-7">
             <h3 class="text-xl font-semibold">{{ idea.title }}</h3>
-            <p class="mt-3 text-zinc-600">{{ idea.text }}</p>
+            <p class="mt-3 text-slateSoft">{{ idea.text }}</p>
           </div>
         </div>
       </div>
     </RevealBlock>
 
     <RevealBlock :delay="0.25">
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold md:text-4xl text-center">力量汇聚 全球连结</h2>
+      <div class="space-y-5">
+        <h2 class="text-center text-3xl font-bold md:text-4xl">力量汇聚 · 全球连结</h2>
         <RotatingGlobe />
       </div>
     </RevealBlock>
@@ -55,15 +58,15 @@
       <div class="space-y-6">
         <div class="flex items-center justify-between">
           <h2 class="text-3xl font-bold">最新活动预览</h2>
-          <RouterLink to="/activities" class="text-sm font-semibold text-primary">查看全部 →</RouterLink>
+          <RouterLink to="/activities" class="stripe-link">查看全部</RouterLink>
         </div>
         <div class="grid gap-5 md:grid-cols-3">
-          <article v-for="event in events" :key="event.title" class="overflow-hidden rounded-3xl border border-white/60 bg-white shadow-card transition hover:-translate-y-1 hover:shadow-glow">
-            <div class="h-40 bg-gradient-to-br from-primary/70 via-primaryLight/50 to-highlight/40"></div>
+          <article v-for="event in events" :key="event.title" class="stripe-soft overflow-hidden">
+            <div class="h-36 bg-gradient-to-br from-primary/70 via-primaryLight/55 to-highlight/45"></div>
             <div class="space-y-2 p-6">
-              <p class="text-xs tracking-wider text-zinc-500">{{ event.date }}</p>
+              <p class="text-xs tracking-wider text-slateSoft">{{ event.date }}</p>
               <h3 class="text-lg font-bold">{{ event.title }}</h3>
-              <p class="text-sm text-zinc-600">{{ event.desc }}</p>
+              <p class="text-sm text-slateSoft">{{ event.desc }}</p>
             </div>
           </article>
         </div>
@@ -91,8 +94,8 @@ const ideas = [
 ]
 
 const events = [
-  { date: '2026.03', title: 'ZPA科技周', desc: '探索前沿科技与社会影响，做AI与Web3的探索者' },
-  { date: '2026.02', title: 'ZPA年度峰会', desc: '汇聚全体会员力量，共谋发展大计。' },
-  { date: '2026.01', title: '守护者圆桌', desc: '邀请成员讨论年度行动重点与资源协同方式。' }
+  { date: '2026.03', title: 'ZPA 科技周', desc: '探索前沿科技与社会影响，做 AI 与 Web3 的探索者。' },
+  { date: '2026.02', title: 'ZPA 年度峰会', desc: '汇聚全体会员力量，共谋发展大计。' },
+  { date: '2026.01', title: '守护者圆桌', desc: '讨论年度行动重点与资源协同方式。' }
 ]
 </script>

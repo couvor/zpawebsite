@@ -1,18 +1,18 @@
-﻿<template>
+<template>
   <section class="space-y-20">
     <!-- Hero Section -->
     <RevealBlock>
-      <div class="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-gradient-to-br from-white/95 to-white/80 p-10 shadow-card md:p-16">
+      <div class="stripe-panel relative overflow-hidden p-10 md:p-16">
         <div class="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
         <div class="absolute -bottom-24 left-0 h-80 w-80 rounded-full bg-highlight/25 blur-3xl"></div>
 
         <div class="relative max-w-4xl space-y-6">
-          <p class="text-sm font-semibold tracking-[0.18em] text-primary">合作伙伴</p>
+          <p class="stripe-kicker">合作伙伴</p>
           <h1 class="text-4xl font-extrabold leading-tight text-textDeep md:text-6xl">
             与全球领先机构
             <span class="text-primary">携手同行</span>
           </h1>
-          <p class="max-w-3xl text-lg leading-relaxed text-zinc-600">
+          <p class="max-w-3xl text-lg leading-relaxed text-slateSoft">
             我们与来自学术界、产业界和非营利组织的杰出伙伴携手合作，共同推进张明旸保护事业，促进知识交流与创新实践。
           </p>
         </div>
@@ -22,10 +22,10 @@
     <!-- Stats Section -->
     <RevealBlock :delay="0.1">
       <div class="grid gap-4 md:grid-cols-3">
-        <article v-for="stat in stats" :key="stat.number" class="glass-card p-8 text-center">
+        <article v-for="stat in stats" :key="stat.number" class="stripe-soft p-8 text-center">
           <p class="mb-2 text-4xl font-bold text-primary">{{ stat.number }}</p>
           <h3 class="text-lg font-semibold text-textDeep">{{ stat.label }}</h3>
-          <p class="mt-2 text-sm text-zinc-600">{{ stat.description }}</p>
+          <p class="mt-2 text-sm text-slateSoft">{{ stat.description }}</p>
         </article>
       </div>
     </RevealBlock>
@@ -42,7 +42,7 @@
             学术合作机构
           </h3>
           <div class="grid gap-4 md:grid-cols-2">
-            <div v-for="partner in academicPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
+            <div v-for="partner in academicPartners" :key="partner.name" class="stripe-soft group overflow-hidden p-6 transition hover:-translate-y-1">
               <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 flex-1">
                   <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
@@ -51,7 +51,7 @@
                 </div>
                 <span class="text-2xl ml-2 flex-shrink-0">{{ partner.icon }}</span>
               </div>
-              <p class="text-sm text-zinc-600">{{ partner.description }}</p>
+              <p class="text-sm text-slateSoft">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-primary">{{ partner.focus }}</p>
             </div>
           </div>
@@ -64,7 +64,7 @@
             产业合作伙伴
           </h3>
           <div class="grid gap-4 md:grid-cols-2">
-            <div v-for="partner in industryPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
+            <div v-for="partner in industryPartners" :key="partner.name" class="stripe-soft group overflow-hidden p-6 transition hover:-translate-y-1">
               <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 flex-1">
                   <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
@@ -73,7 +73,7 @@
                 </div>
                 <span class="text-2xl flex-shrink-0">{{ partner.icon }}</span>
               </div>
-              <p class="text-sm text-zinc-600">{{ partner.description }}</p>
+              <p class="text-sm text-slateSoft">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-highlight">{{ partner.focus }}</p>
             </div>
           </div>
@@ -86,7 +86,7 @@
             非营利组织
           </h3>
           <div class="grid gap-4 md:grid-cols-2">
-            <div v-for="partner in ngoPartners" :key="partner.name" class="glass-card group overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-glow">
+            <div v-for="partner in ngoPartners" :key="partner.name" class="stripe-soft group overflow-hidden p-6 transition hover:-translate-y-1">
               <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 flex-1">
                   <img v-if="partner.logo" :src="partner.logo" :alt="partner.name" class="h-12 w-12 object-contain rounded-lg bg-white/50 p-1 flex-shrink-0" />
@@ -95,7 +95,7 @@
                 </div>
                 <span class="text-2xl flex-shrink-0">{{ partner.icon }}</span>
               </div>
-              <p class="text-sm text-zinc-600">{{ partner.description }}</p>
+              <p class="text-sm text-slateSoft">{{ partner.description }}</p>
               <p v-if="partner.focus" class="mt-3 text-xs font-medium text-green-600">{{ partner.focus }}</p>
             </div>
           </div>
@@ -108,12 +108,12 @@
       <div class="space-y-6">
         <h2 class="text-3xl font-bold md:text-4xl">合作方式</h2>
         <div class="grid gap-5 md:grid-cols-4">
-          <div v-for="(process, index) in collaborationProcess" :key="index" class="glass-card p-7">
+          <div v-for="(process, index) in collaborationProcess" :key="index" class="stripe-soft p-7">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 text-primary font-bold">
               {{ index + 1 }}
             </div>
             <h3 class="text-lg font-semibold text-textDeep">{{ process.stage }}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-zinc-600">{{ process.description }}</p>
+            <p class="mt-3 text-sm leading-relaxed text-slateSoft">{{ process.description }}</p>
           </div>
         </div>
       </div>
@@ -128,14 +128,14 @@
           <h2 class="text-3xl font-bold md:text-4xl">
             <span class="text-primary">成为合作伙伴</span>
           </h2>
-          <p class="text-lg leading-relaxed text-zinc-700">
+          <p class="text-lg leading-relaxed text-slateSoft">
             如果您的组织对张明旸保护事业充满热情，我们欢迎各种形式的合作。无论是学术研究、资源共享还是联合倡议，请与我们联系。
           </p>
           <div class="flex flex-wrap gap-3">
-            <RouterLink to="/contact" class="rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">
+            <RouterLink to="/contact" class="stripe-btn">
               联系我们
             </RouterLink>
-            <a href="mailto:partnership@example.com" class="rounded-2xl border border-primary/30 bg-white px-6 py-3 font-semibold text-primary transition hover:bg-primary/10">
+            <a href="mailto:partnership@example.com" class="stripe-btn-light">
               发送邮件
             </a>
           </div>

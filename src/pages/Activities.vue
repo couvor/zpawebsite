@@ -1,23 +1,22 @@
-﻿<template>
+<template>
   <section class="space-y-10">
     <RevealBlock>
-      <div class="glass-card space-y-4 p-8 md:p-12">
-        <p class="text-sm font-semibold tracking-[0.18em] text-primary">ACTIVITIES</p>
+      <div class="stripe-panel space-y-4 p-8 md:p-12">
+        <p class="stripe-kicker">Activities</p>
         <h1 class="text-4xl font-extrabold md:text-5xl">活动展示</h1>
-        <p class="text-zinc-600">从倡议到复盘，我们让每次行动都留下清晰足迹。</p>
+        <p class="text-slateSoft">从倡议到复盘，我们让每次行动都留下清晰足迹。</p>
       </div>
     </RevealBlock>
 
     <div class="grid gap-6 md:grid-cols-2">
       <RevealBlock v-for="(activity, idx) in activities" :key="activity.title" :delay="idx * 0.08">
-        <article class="overflow-hidden rounded-[1.75rem] border border-white/60 bg-white shadow-card transition hover:-translate-y-1 hover:shadow-glow">
-          <div class="relative h-52 overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary/80 via-primaryLight/55 to-highlight/50"></div>
-            <div class="absolute bottom-4 left-4 rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-primary">{{ activity.date }}</div>
+        <article class="stripe-soft overflow-hidden transition hover:-translate-y-1">
+          <div class="relative h-52 overflow-hidden bg-gradient-to-br from-primary/75 via-primaryLight/50 to-highlight/45">
+            <div class="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary">{{ activity.date }}</div>
           </div>
           <div class="space-y-3 p-6">
             <h3 class="text-2xl font-bold">{{ activity.title }}</h3>
-            <p class="text-sm leading-relaxed text-zinc-600">{{ activity.desc }}</p>
+            <p class="text-sm leading-relaxed text-slateSoft">{{ activity.desc }}</p>
           </div>
         </article>
       </RevealBlock>

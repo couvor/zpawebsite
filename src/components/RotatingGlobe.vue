@@ -1,23 +1,20 @@
 <template>
-  <div class="relative w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden rounded-2xl bg-[#05060a]">
-    <div class="absolute inset-0 globe-bg"></div>
-    <div class="absolute inset-0">
-      <div class="halo-ring"></div>
-    </div>
+  <div class="relative w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden rounded-2xl bg-[#f2f2f7]">
+    <div class="absolute inset-0 stripe-bg"></div>
 
     <div ref="globeContainer" class="relative z-10 w-full h-full"></div>
 
-    <div v-if="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-black/20 rounded-2xl">
-      <div class="text-white text-center">
+    <div v-if="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-white/30 rounded-2xl">
+      <div class="text-[#3d4762] text-center">
         <div class="mb-2 text-sm">loading globe...</div>
-        <div class="text-xs text-gray-300">{{ loadingStatus }}</div>
+        <div class="text-xs text-[#7c88a8]">{{ loadingStatus }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import * as THREE from 'three'
 
 const globeContainer = ref(null)
@@ -30,14 +27,163 @@ let renderer
 let animationId
 
 let globeGroup
-let coreMesh
-let wireMesh
 let pointsMesh
-let outerGlowMesh
-let stars
+let arcGroup
+
+let currentRotX = 0.32
+let currentRotY = -0.58
+let targetRotX = 0.32
+let targetRotY = -0.58
 
 let onMouseMove
 let onResize
+
+const disposableGeometries = []
+const disposableMaterials = []
+
+const addDisposable = (geometry, material) => {
+  if (geometry) disposableGeometries.push(geometry)
+  if (material) disposableMaterials.push(material)
+}
+
+const toCartesian = (latDeg, lonDeg, radius) => {
+  const lat = THREE.MathUtils.degToRad(latDeg)
+  const lon = THREE.MathUtils.degToRad(lonDeg)
+
+  const x = radius * Math.cos(lat) * Math.cos(lon)
+  const y = radius * Math.sin(lat)
+  const z = radius * Math.cos(lat) * Math.sin(lon)
+
+  return new THREE.Vector3(x, y, z)
+}
+
+const buildPointsGlobe = () => {
+  const radius = 1.42
+  const count = 24000
+
+  const positions = new Float32Array(count * 3)
+  const colors = new Float32Array(count * 3)
+
+  const colorBlue = new THREE.Color('#5f77ff')
+  const colorViolet = new THREE.Color('#9f5fff')
+  const colorPink = new THREE.Color('#ff63c7')
+  const colorOrange = new THREE.Color('#ff8463')
+  const white = new THREE.Color('#fbfbff')
+
+  const tempColor = new THREE.Color()
+
+  for (let i = 0; i < count; i += 1) {
+    const u = Math.random()
+    const v = Math.random()
+
+    const theta = 2 * Math.PI * u
+    const phi = Math.acos(2 * v - 1)
+
+    const x = Math.sin(phi) * Math.cos(theta)
+    const y = Math.cos(phi)
+    const z = Math.sin(phi) * Math.sin(theta)
+
+    const cluster = Math.sin(x * 6.2) + Math.cos(y * 8.3) + Math.sin(z * 5.6)
+    const sparseMask = Math.random() < 0.15
+    const shouldUse = cluster > 0.45 || sparseMask
+
+    const idx = i * 3
+
+    if (!shouldUse) {
+      positions[idx] = 999
+      positions[idx + 1] = 999
+      positions[idx + 2] = 999
+
+      colors[idx] = 1
+      colors[idx + 1] = 1
+      colors[idx + 2] = 1
+      continue
+    }
+
+    const r = radius + (Math.random() - 0.5) * 0.012
+
+    positions[idx] = x * r
+    positions[idx + 1] = y * r
+    positions[idx + 2] = z * r
+
+    const t = (x + 1) / 2
+
+    if (t < 0.32) {
+      tempColor.copy(colorBlue).lerp(colorViolet, t / 0.32)
+    } else if (t < 0.72) {
+      tempColor.copy(colorViolet).lerp(colorPink, (t - 0.32) / 0.4)
+    } else {
+      tempColor.copy(colorPink).lerp(colorOrange, (t - 0.72) / 0.28)
+    }
+
+    const wash = THREE.MathUtils.clamp((1 - Math.abs(y) * 1.25) * 0.42, 0, 0.42)
+    tempColor.lerp(white, wash)
+
+    colors[idx] = tempColor.r
+    colors[idx + 1] = tempColor.g
+    colors[idx + 2] = tempColor.b
+  }
+
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+
+  const material = new THREE.PointsMaterial({
+    size: 0.011,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.95,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  })
+
+  addDisposable(geometry, material)
+
+  return new THREE.Points(geometry, material)
+}
+
+const buildArc = ({ from, to, color = '#8a4dff', lift = 0.55 }) => {
+  const start = toCartesian(from.lat, from.lon, 1.45)
+  const end = toCartesian(to.lat, to.lon, 1.45)
+
+  const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5)
+  const control = mid.clone().normalize().multiplyScalar(1.45 + lift)
+
+  const curve = new THREE.QuadraticBezierCurve3(start, control, end)
+  const points = curve.getPoints(120)
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(points)
+  const material = new THREE.LineBasicMaterial({
+    color,
+    transparent: true,
+    opacity: 0.92,
+    blending: THREE.AdditiveBlending
+  })
+
+  const line = new THREE.Line(geometry, material)
+
+  const markerGeometry = new THREE.SphereGeometry(0.02, 18, 18)
+  const markerMaterial = new THREE.MeshBasicMaterial({
+    color,
+    transparent: true,
+    opacity: 0.9
+  })
+
+  const markerA = new THREE.Mesh(markerGeometry, markerMaterial)
+  markerA.position.copy(start)
+  const markerB = new THREE.Mesh(markerGeometry, markerMaterial)
+  markerB.position.copy(end)
+
+  addDisposable(geometry, material)
+  addDisposable(markerGeometry, markerMaterial)
+
+  const group = new THREE.Group()
+  group.add(line)
+  group.add(markerA)
+  group.add(markerB)
+
+  return group
+}
 
 const setupGlobe = async () => {
   try {
@@ -60,118 +206,67 @@ const setupGlobe = async () => {
     loadingStatus.value = 'creating scene'
     scene = new THREE.Scene()
 
-    camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100)
-    camera.position.z = 3.2
+    camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100)
+    camera.position.set(0.1, 0.06, 2.78)
 
-    loadingStatus.value = 'creating renderer'
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.outputColorSpace = THREE.SRGBColorSpace
     container.appendChild(renderer.domElement)
 
-    loadingStatus.value = 'building globe'
+    loadingStatus.value = 'building points globe'
 
     globeGroup = new THREE.Group()
     scene.add(globeGroup)
 
-    const globeGeometry = new THREE.SphereGeometry(1, 96, 96)
-
-    coreMesh = new THREE.Mesh(
-      globeGeometry,
-      new THREE.MeshBasicMaterial({
-        color: 0x101725,
-        transparent: true,
-        opacity: 0.7
-      })
-    )
-    globeGroup.add(coreMesh)
-
-    wireMesh = new THREE.Mesh(
-      globeGeometry,
-      new THREE.MeshBasicMaterial({
-        color: 0x8fb6ff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.28
-      })
-    )
-    globeGroup.add(wireMesh)
-
-    pointsMesh = new THREE.Points(
-      globeGeometry,
-      new THREE.PointsMaterial({
-        color: 0xdbe8ff,
-        size: 0.012,
-        transparent: true,
-        opacity: 0.9,
-        depthWrite: false
-      })
-    )
+    pointsMesh = buildPointsGlobe()
     globeGroup.add(pointsMesh)
 
-    outerGlowMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(1.08, 96, 96),
-      new THREE.MeshBasicMaterial({
-        color: 0x7ea7ff,
-        transparent: true,
-        opacity: 0.1,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+    arcGroup = new THREE.Group()
+    arcGroup.add(
+      buildArc({
+        from: { lat: 20, lon: -135 },
+        to: { lat: -28, lon: 20 },
+        color: '#8b49ff',
+        lift: 0.72
       })
     )
-    globeGroup.add(outerGlowMesh)
-
-    const starsGeometry = new THREE.BufferGeometry()
-    const starCount = 1300
-    const starPositions = new Float32Array(starCount * 3)
-
-    for (let i = 0; i < starCount * 3; i += 3) {
-      const radius = 8 + Math.random() * 12
-      const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(2 * Math.random() - 1)
-
-      starPositions[i] = radius * Math.sin(phi) * Math.cos(theta)
-      starPositions[i + 1] = radius * Math.cos(phi)
-      starPositions[i + 2] = radius * Math.sin(phi) * Math.sin(theta)
-    }
-
-    starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
-
-    stars = new THREE.Points(
-      starsGeometry,
-      new THREE.PointsMaterial({
-        color: 0x8ea3d8,
-        size: 0.015,
-        transparent: true,
-        opacity: 0.5,
-        depthWrite: false
+    arcGroup.add(
+      buildArc({
+        from: { lat: 34, lon: 48 },
+        to: { lat: 8, lon: -24 },
+        color: '#ff58c7',
+        lift: 0.46
       })
     )
-    scene.add(stars)
+    arcGroup.add(
+      buildArc({
+        from: { lat: -14, lon: -55 },
+        to: { lat: -35, lon: 65 },
+        color: '#6d6cff',
+        lift: 0.52
+      })
+    )
 
-    const ambientLight = new THREE.AmbientLight(0xb7cbff, 0.75)
-    scene.add(ambientLight)
+    globeGroup.add(arcGroup)
 
-    const keyLight = new THREE.PointLight(0xa7c0ff, 1.8, 18)
-    keyLight.position.set(2.6, 1.4, 3.2)
-    scene.add(keyLight)
+    const ambient = new THREE.AmbientLight(0xffffff, 0.9)
+    scene.add(ambient)
 
-    const rimLight = new THREE.PointLight(0x6f8fff, 0.9, 16)
-    rimLight.position.set(-3.4, -1.6, -2.3)
-    scene.add(rimLight)
+    const softLight = new THREE.PointLight(0xd5ccff, 0.8, 14)
+    softLight.position.set(1.8, 1.2, 2.5)
+    scene.add(softLight)
 
-    let targetRotX = 0.12
-    let targetRotY = -0.35
-    let currentRotX = 0.12
-    let currentRotY = -0.35
+    const warmLight = new THREE.PointLight(0xffc5b4, 0.45, 14)
+    warmLight.position.set(2.3, 0.1, 1.6)
+    scene.add(warmLight)
 
     onMouseMove = (e) => {
       const x = e.clientX / window.innerWidth - 0.5
       const y = e.clientY / window.innerHeight - 0.5
-      targetRotX = y * 0.55
-      targetRotY = x * 0.9
+      targetRotX = 0.32 + y * 0.25
+      targetRotY = -0.58 + x * 0.35
     }
 
     onResize = () => {
@@ -191,16 +286,17 @@ const setupGlobe = async () => {
     const animate = () => {
       animationId = requestAnimationFrame(animate)
 
-      currentRotX += (targetRotX - currentRotX) * 0.04
-      currentRotY += (targetRotY - currentRotY) * 0.04
+      currentRotX += (targetRotX - currentRotX) * 0.035
+      currentRotY += (targetRotY - currentRotY) * 0.035
 
       const t = performance.now() * 0.001
 
       globeGroup.rotation.x = currentRotX
-      globeGroup.rotation.y = currentRotY + t * 0.12
+      globeGroup.rotation.y = currentRotY + t * 0.04
 
-      outerGlowMesh.rotation.y -= 0.0006
-      stars.rotation.y += 0.00012
+      if (pointsMesh?.material) {
+        pointsMesh.material.opacity = 0.88 + Math.sin(t * 1.6) * 0.05
+      }
 
       renderer.render(scene, camera)
     }
@@ -220,26 +316,15 @@ const cleanupGlobe = () => {
 
   if (animationId) cancelAnimationFrame(animationId)
 
-  if (scene) {
-    scene.traverse((obj) => {
-      if (obj.geometry) obj.geometry.dispose()
-
-      if (obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach((m) => m.dispose())
-        } else {
-          obj.material.dispose()
-        }
-      }
-    })
-  }
+  disposableGeometries.forEach((g) => g.dispose())
+  disposableMaterials.forEach((m) => m.dispose())
+  disposableGeometries.length = 0
+  disposableMaterials.length = 0
 
   if (renderer) {
     renderer.dispose()
     const canvas = renderer.domElement
-    if (canvas?.parentNode) {
-      canvas.parentNode.removeChild(canvas)
-    }
+    if (canvas?.parentNode) canvas.parentNode.removeChild(canvas)
   }
 }
 
@@ -260,36 +345,9 @@ onUnmounted(() => {
   border-radius: 1rem;
 }
 
-.globe-bg {
+.stripe-bg {
   background:
-    radial-gradient(42% 42% at 50% 48%, rgba(120, 152, 235, 0.18), rgba(5, 6, 10, 0) 74%),
-    radial-gradient(85% 72% at 50% 50%, rgba(9, 12, 20, 0.75), rgba(5, 6, 10, 1) 100%);
-}
-
-.halo-ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(72vw, 510px);
-  height: min(72vw, 510px);
-  transform: translate(-50%, -50%);
-  border-radius: 9999px;
-  border: 1px solid rgba(155, 183, 255, 0.18);
-  box-shadow:
-    0 0 120px rgba(114, 145, 240, 0.12),
-    inset 0 0 90px rgba(145, 170, 255, 0.05);
-  animation: haloPulse 6.8s ease-in-out infinite;
-}
-
-@keyframes haloPulse {
-  0%,
-  100% {
-    opacity: 0.52;
-    transform: translate(-50%, -50%) scale(0.985);
-  }
-  50% {
-    opacity: 0.85;
-    transform: translate(-50%, -50%) scale(1.02);
-  }
+    radial-gradient(56% 56% at 50% 44%, rgba(255, 255, 255, 0.72), rgba(242, 242, 247, 0) 72%),
+    radial-gradient(90% 90% at 50% 55%, rgba(225, 227, 239, 0.78), rgba(242, 242, 247, 0.98) 85%);
 }
 </style>
