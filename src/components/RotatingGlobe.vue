@@ -132,7 +132,7 @@ const buildPointsGlobe = () => {
     size: 0.011,
     vertexColors: true,
     transparent: true,
-    opacity: 0.95,
+    opacity: 0.96,
     depthWrite: false,
     blending: THREE.AdditiveBlending
   })
@@ -143,30 +143,30 @@ const buildPointsGlobe = () => {
 }
 
 const buildArc = ({ from, to, color = '#8a4dff', lift = 0.55 }) => {
-  const start = toCartesian(from.lat, from.lon, 1.45)
-  const end = toCartesian(to.lat, to.lon, 1.45)
+  const start = toCartesian(from.lat, from.lon, 1.22)
+  const end = toCartesian(to.lat, to.lon, 1.22)
 
   const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5)
-  const control = mid.clone().normalize().multiplyScalar(1.45 + lift)
+  const control = mid.clone().normalize().multiplyScalar(1.22 + lift * 0.42)
 
   const curve = new THREE.QuadraticBezierCurve3(start, control, end)
-  const points = curve.getPoints(120)
+  const points = curve.getPoints(140)
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points)
   const material = new THREE.LineBasicMaterial({
     color,
     transparent: true,
-    opacity: 0.92,
+    opacity: 0.86,
     blending: THREE.AdditiveBlending
   })
 
   const line = new THREE.Line(geometry, material)
 
-  const markerGeometry = new THREE.SphereGeometry(0.02, 18, 18)
+  const markerGeometry = new THREE.SphereGeometry(0.016, 14, 14)
   const markerMaterial = new THREE.MeshBasicMaterial({
     color,
     transparent: true,
-    opacity: 0.9
+    opacity: 0.8
   })
 
   const markerA = new THREE.Mesh(markerGeometry, markerMaterial)
@@ -174,13 +174,31 @@ const buildArc = ({ from, to, color = '#8a4dff', lift = 0.55 }) => {
   const markerB = new THREE.Mesh(markerGeometry, markerMaterial)
   markerB.position.copy(end)
 
+  const flowGeometry = new THREE.SphereGeometry(0.018, 12, 12)
+  const flowMaterial = new THREE.MeshBasicMaterial({
+    color,
+    transparent: true,
+    opacity: 1
+  })
+  const flowDot = new THREE.Mesh(flowGeometry, flowMaterial)
+  flowDot.position.copy(start)
+
+  flowRunners.push({
+    mesh: flowDot,
+    curve,
+    speed: 0.003 + Math.random() * 0.0024,
+    offset: Math.random()
+  })
+
   addDisposable(geometry, material)
   addDisposable(markerGeometry, markerMaterial)
+  addDisposable(flowGeometry, flowMaterial)
 
   const group = new THREE.Group()
   group.add(line)
   group.add(markerA)
   group.add(markerB)
+  group.add(flowDot)
 
   return group
 }
@@ -207,7 +225,7 @@ const setupGlobe = async () => {
     scene = new THREE.Scene()
 
     camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100)
-    camera.position.set(0.1, 0.06, 2.78)
+    camera.position.set(0.1, 0.06, 3.14)
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(width, height)
@@ -220,34 +238,46 @@ const setupGlobe = async () => {
     globeGroup = new THREE.Group()
     scene.add(globeGroup)
 
-    pointsMesh = buildPointsGlobe()
+    const landMask = await loadLandMask()
+    pointsMesh = buildPointsGlobe(landMask)
     globeGroup.add(pointsMesh)
 
+    const xian = { lat: 34.3416, lon: 108.9398 }
+
+    const routes = [
+      { to: { lat: 39.9042, lon: 116.4074 }, color: '#8b49ff', lift: 0.34 },
+      { to: { lat: 31.2304, lon: 121.4737 }, color: '#ff58c7', lift: 0.32 },
+      { to: { lat: 23.1291, lon: 113.2644 }, color: '#6d6cff', lift: 0.38 },
+      { to: { lat: 22.5431, lon: 114.0579 }, color: '#7f6bff', lift: 0.4 },
+      { to: { lat: 30.5728, lon: 104.0668 }, color: '#ff63c7', lift: 0.28 },
+      { to: { lat: 30.5928, lon: 114.3055 }, color: '#8a7bff', lift: 0.3 },
+      { to: { lat: 30.2741, lon: 120.1551 }, color: '#8b49ff', lift: 0.3 },
+      { to: { lat: 32.0603, lon: 118.7969 }, color: '#6d6cff', lift: 0.3 },
+      { to: { lat: 29.563, lon: 106.5516 }, color: '#ff58c7', lift: 0.33 },
+      { to: { lat: 22.3193, lon: 114.1694 }, color: '#6d6cff', lift: 0.39 },
+      { to: { lat: 1.3521, lon: 103.8198 }, color: '#8b49ff', lift: 0.58 },
+      { to: { lat: 35.6762, lon: 139.6503 }, color: '#ff58c7', lift: 0.52 },
+      { to: { lat: 37.5665, lon: 126.978 }, color: '#6d6cff', lift: 0.5 },
+      { to: { lat: 25.2048, lon: 55.2708 }, color: '#8a7bff', lift: 0.6 },
+      { to: { lat: 48.8566, lon: 2.3522 }, color: '#ff63c7', lift: 0.74 },
+      { to: { lat: 51.5072, lon: -0.1276 }, color: '#6d6cff', lift: 0.78 },
+      { to: { lat: 40.7128, lon: -74.006 }, color: '#8b49ff', lift: 0.92 },
+      { to: { lat: 34.0522, lon: -118.2437 }, color: '#ff58c7', lift: 0.84 },
+      { to: { lat: -33.8688, lon: 151.2093 }, color: '#6d6cff', lift: 1.02 },
+      { to: { lat: 55.7558, lon: 37.6173 }, color: '#8a7bff', lift: 0.76 }
+    ]
+
     arcGroup = new THREE.Group()
+    routes.forEach((route) => {
     arcGroup.add(
       buildArc({
-        from: { lat: 20, lon: -135 },
-        to: { lat: -28, lon: 20 },
-        color: '#8b49ff',
-        lift: 0.72
+          from: xian,
+          to: route.to,
+          color: route.color,
+          lift: route.lift
       })
     )
-    arcGroup.add(
-      buildArc({
-        from: { lat: 34, lon: 48 },
-        to: { lat: 8, lon: -24 },
-        color: '#ff58c7',
-        lift: 0.46
-      })
-    )
-    arcGroup.add(
-      buildArc({
-        from: { lat: -14, lon: -55 },
-        to: { lat: -35, lon: 65 },
-        color: '#6d6cff',
-        lift: 0.52
-      })
-    )
+    })
 
     globeGroup.add(arcGroup)
 
