@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap');
 @import 'animate.css';
 @tailwind base;
 @tailwind components;
@@ -59,4 +59,9 @@ h6 {
 
 .stripe-btn-light {
   @apply rounded-xl border border-primary/25 bg-white px-5 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10;
+}
+
+.hero-elegant-title {
+  font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.03em;
 }

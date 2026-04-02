@@ -129,13 +129,13 @@
             <span class="text-primary">成为合作伙伴</span>
           </h2>
           <p class="text-lg leading-relaxed text-slateSoft">
-            如果您的组织对张明旸保护事业充满热情，我们欢迎各种形式的合作。无论是学术研究、资源共享还是联合倡议，请与我们联系。
+            这里凝聚起每个人的创造力，大家秉承着共同的价值观，一起为成就伟大事业而努力。在这里，你不只是加入我们，更会为我们带来精彩新思维。
           </p>
           <div class="flex flex-wrap gap-3">
             <RouterLink to="/contact" class="stripe-btn">
               联系我们
             </RouterLink>
-            <a href="mailto:partnership@example.com" class="stripe-btn-light">
+            <a href="mailto:head@couvor.cyou" class="stripe-btn-light">
               发送邮件
             </a>
           </div>
