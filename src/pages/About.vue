@@ -5,8 +5,7 @@
         <p class="text-sm font-semibold tracking-[0.18em] text-primary">ABOUT ASSOCIATION</p>
         <h1 class="text-4xl font-extrabold md:text-5xl">协会介绍</h1>
         <p class="max-w-3xl text-lg leading-relaxed text-zinc-600">
-          张明旸保护协会成立于一群长期关注公共议题的志愿者。我们相信，真正有效的守护，来自持续的信息整理、共情沟通与联合行动。
-        </p>
+          让"附近"回归，保护喜欢无所事事的人，保护喜欢在四书馆读无用之书的人，保护用理想对抗现实的人，想后退想逃避，可以，ZPA在你身后。
       </div>
     </RevealBlock>
 
@@ -27,7 +26,7 @@ import RevealBlock from '../components/RevealBlock.vue'
 const blocks = [
   {
     title: '成立背景',
-    text: '在信息碎片化背景下，许多支持声音难以被系统记录。协会希望以更有序的方式连接关注者，降低行动门槛。'
+    text: '我们面对着未知数最多的时代，理想难以实现社交近乎没有，没有人愿意走进自己的心，自己也难以与亲近的人交流，社交媒体上的表情包热框数炸着大脑，自己难以走进自己的内心，他人也以走进，"附近"正在消失。我们试图让"无声"的人发声，让"附近"回归'
   },
   {
     title: '协会愿景',
@@ -35,7 +34,7 @@ const blocks = [
   },
   {
     title: '核心价值观',
-    text: '真实、理性、协作。我们既保持立场，也保持对事实与不同观点的尊重。'
+    text: '只倾听，不批判；只建议，不要求，只充实，不忙碌；只生活，不绝望。'
   }
 ]
 </script>
