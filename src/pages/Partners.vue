@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="space-y-20">
     <!-- Hero Section -->
     <RevealBlock>

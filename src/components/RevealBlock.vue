@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <Motion
     :initial="{ opacity: 0, y: 20 }"
     :in-view="{ opacity: 1, y: 0 }"

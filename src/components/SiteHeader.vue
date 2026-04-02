@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <header class="sticky top-0 z-40 border-b border-white/40 bg-white/70 backdrop-blur-xl">
     <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 md:px-8">
       <RouterLink to="/" class="group flex items-center gap-3">
-        <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-white shadow-glow transition group-hover:-translate-y-0.5">张</span>
+        <img src="/logos/logo.jpg" alt="ZPA Logo" class="h-10 w-10 rounded-2xl object-cover shadow-glow transition group-hover:-translate-y-0.5" />
         <div>
           <p class="text-sm font-semibold tracking-wide text-primary">张明旸保护协会</p>
           <p class="text-xs text-zinc-500">Protect with warmth</p>

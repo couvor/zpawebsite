@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="space-y-10">
     <RevealBlock>
       <div class="glass-card space-y-5 p-8 md:p-12">

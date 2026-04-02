@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="space-y-20">
     <RevealBlock>
       <div class="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/80 p-10 shadow-card md:p-16">
