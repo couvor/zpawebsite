@@ -328,21 +328,3 @@ onUnmounted(() => {
   border-radius: 1rem;
 }
 </style>
-</script>
-
-<style scoped>
-:deep(.globe-container) {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-:deep(canvas) {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-  border-radius: 1rem;
-}
-</style>
