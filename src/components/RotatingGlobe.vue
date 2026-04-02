@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="relative w-full h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden rounded-2xl bg-transparent">
     <div ref="globeContainer" class="w-full h-full"></div>
     <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl z-10">
@@ -62,31 +62,18 @@ const setupGlobe = async () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     container.appendChild(renderer.domElement)
 
-    // Load Earth texture from CDN
+    // Load Earth textures from local static assets
     loadingStatus.value = 'loading Earth texture'
     const textureLoader = new THREE.TextureLoader()
-    
-    let earthTexture
-    try {
-      earthTexture = await new Promise((resolve, reject) => {
-        textureLoader.load(
-          'https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg',
-          resolve,
-          undefined,
-          reject
-        )
-      })
-    } catch (err) {
-      console.warn('Primary texture failed, trying backup')
-      earthTexture = await new Promise((resolve, reject) => {
-        textureLoader.load(
-          'https://images-assets.nasa.gov/image/as17-148-22727/as17-148-22727~large.jpg',
-          resolve,
-          undefined,
-          reject
-        )
-      })
-    }
+
+    const earthTexture = await new Promise((resolve, reject) => {
+      textureLoader.load(
+        '/textures/earth-daymap.jpg',
+        resolve,
+        undefined,
+        reject
+      )
+    })
 
     // Load normal map for bump effect
     loadingStatus.value = 'loading normal map'
@@ -94,7 +81,7 @@ const setupGlobe = async () => {
     try {
       normalMap = await new Promise((resolve) => {
         textureLoader.load(
-          'https://www.solarsystemscope.com/textures/download/2k_earth_normal_map.jpg',
+          '/textures/earth-normal.jpg',
           resolve,
           undefined,
           () => resolve(null)
