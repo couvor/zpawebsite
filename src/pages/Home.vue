@@ -44,6 +44,13 @@
       </div>
     </RevealBlock>
 
+    <RevealBlock :delay="0.25">
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold md:text-4xl text-center">力量汇聚 全球连结</h2>
+        <RotatingGlobe />
+      </div>
+    </RevealBlock>
+
     <RevealBlock :delay="0.3">
       <div class="space-y-6">
         <div class="flex items-center justify-between">
@@ -68,6 +75,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import RevealBlock from '../components/RevealBlock.vue'
+import RotatingGlobe from '../components/RotatingGlobe.vue'
 
 const reasons = [
   { title: '公开透明', text: '关注信息公开与进度更新，建立可信、可追踪的行动档案。' },

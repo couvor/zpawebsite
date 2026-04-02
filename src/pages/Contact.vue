@@ -13,7 +13,7 @@
         <article class="glass-card space-y-4 p-7">
           <h2 class="text-2xl font-bold">联系方式</h2>
           <ul class="space-y-3 text-zinc-600">
-            <li><span class="font-semibold text-textDeep">邮箱：</span>offcial@couvor.cyou</li>
+            <li><span class="font-semibold text-textDeep">邮箱：</span>head@couvor.cyou</li>
             <li><span class="font-semibold text-textDeep">企业微信：张明旸保护协会</span></li>
           </ul>
 
@@ -40,8 +40,8 @@ import { Icon } from '@iconify/vue'
 import RevealBlock from '../components/RevealBlock.vue'
 
 const socials = [
-  { label: '微博', icon: 'ri:weibo-fill' },
-  { label: '微信公众号', icon: 'ri:wechat-fill' },
-  { label: 'B站', icon: 'ri:bilibili-fill' }
+  { label: '微博', icon: 'weibo.com' },
+  { label: '微信公众号', icon: 'wechat.com' },
+  { label: 'B站', icon: 'bilibili.com' }
 ]
 </script>

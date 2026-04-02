@@ -12,7 +12,8 @@ export default {
         highlight: '#FFB366'
       },
       fontFamily: {
-        sans: ['Inter', 'Noto Sans SC', 'HarmonyOS Sans SC', 'system-ui', 'sans-serif']
+        serif: ['Playfair Display', 'Noto Serif SC', 'Georgia', 'serif'],
+        sans: ['Noto Serif SC', 'Playfair Display', 'Georgia', 'serif']
       },
       boxShadow: {
         glow: '0 20px 50px rgba(255, 122, 0, 0.18)',
@@ -28,7 +29,14 @@ export default {
         }
       },
       animation: {
-        float: 'float 6s ease-in-out infinite'
+        float: 'float 6s ease-in-out infinite',
+        spin3d: 'spin3d 20s linear infinite'
+      },
+      keyframes: {
+        spin3d: {
+          'from': { transform: 'rotateX(0deg) rotateY(0deg)' },
+          'to': { transform: 'rotateX(360deg) rotateY(360deg)' }
+        }
       }
     }
   },
