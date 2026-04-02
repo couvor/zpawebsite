@@ -8,11 +8,11 @@
         <div class="relative max-w-3xl space-y-6">
           <p class="stripe-kicker">ZPA Official Site</p>
           <h1 class="text-4xl font-extrabold leading-tight md:text-6xl">
-            用长期协作，守护每一位
-            <span class="text-primary">仍在坚持理想的人</span>
+            世界规模最大的非盈利性
+            <span class="text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-slateSoft">
-            让“附近”回归，保护喜欢无所事事的人，保护在图书馆读无用之书的人，保护用理想对抗现实的人。
+            我们致力于让“附近”回归，成就喜欢无所事事的人，成就在图书馆读无用之书的人，成就用理想对抗现实的人。
           </p>
           <div class="flex flex-wrap gap-3">
             <RouterLink to="/activities" class="stripe-btn">查看最新活动</RouterLink>
@@ -88,9 +88,9 @@ const reasons = [
 ]
 
 const ideas = [
-  { title: '尊重事实', text: '所有传播建立在可核实信息之上，避免情绪化失真。' },
-  { title: '彼此照亮', text: '让关注者互相支持，形成有温度的协作网络。' },
-  { title: '持续行动', text: '把每次发声沉淀为可复用的行动模板与经验。' }
+  { title: '环境责任', text: '善待地球就是善待生活在地球上的人，特别是那些深受环境风险影响的人。我们全力为世界各地的合作伙伴和社区提供支持，因为比起孤军奋战，团结起来能做到更多。' },
+  { title: '教育发展', text: '要创造一个更加公正平等的世界，教育至关重要。为此，我们携手众多合作伙伴，与 100 多个国家及地区的求学者建立联系，为教育工作者们提供支持，创造各种校外学习机会，并推动种族平等与公正。当教育的大门能开得更大，每个人就能有更多途径来发挥自身潜能。' },
+  { title: '创新创造', text: '让世界变得更美好，ZPA义不容辞。我们努力在业务所及之处践行 ZPA 的高标准，为全球供应链的人员和社群提供支持，并努力保护我们共有的地球。。' }
 ]
 
 const events = [

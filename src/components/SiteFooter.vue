@@ -5,7 +5,7 @@
         <p class="font-semibold text-ink">© {{ year }} 张明旸保护协会</p>
         <p class="mt-1 text-xs">我们托起千千万万个梦想</p>
       </div>
-      <p class="text-xs tracking-wide">Built with Vue3 · Tailwind · Motion · Vercel</p>
+      <p class="text-xs tracking-wide">Built by couvor</p>
     </div>
   </footer>
 </template>

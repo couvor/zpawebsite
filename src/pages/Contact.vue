@@ -4,7 +4,7 @@
       <div class="glass-card space-y-4 p-8 md:p-12">
         <p class="text-sm font-semibold tracking-[0.18em] text-primary">CONTACT</p>
         <h1 class="text-4xl font-extrabold md:text-5xl">联系我们</h1>
-        <p class="text-zinc-600">欢迎加入、合作或提供建议。每一条信息我们都会认真回复。</p>
+        <p class="text-zinc-600">这里凝聚着我们每个人的创造力，大家秉持着共同的价值观，一起为成就伟大事业而努力，你不只是加入我们，更会为我们带来精彩新思维</p>
       </div>
     </RevealBlock>
 
