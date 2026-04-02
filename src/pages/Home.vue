@@ -72,7 +72,7 @@ import RevealBlock from '../components/RevealBlock.vue'
 const reasons = [
   { title: '公开透明', text: '关注信息公开与进度更新，建立可信、可追踪的行动档案。' },
   { title: '温和倡议', text: '坚持理性表达，以共识构建推动更广泛的社会关注。' },
-  { title: '社群协作', text: '组织志愿团队，分工完成传播、记录、支持和反馈。' },
+  { title: '社群协作', text: '组团队，分工完成传播、记录、支持和反馈。' },
   { title: '长期守护', text: '不做一次性热度，持续迭代行动机制与资源连接。' }
 ]
 
@@ -83,8 +83,8 @@ const ideas = [
 ]
 
 const events = [
-  { date: '2026.03', title: '春季倡议周', desc: '线上线下联动传播，提升公众对议题的基础认知。' },
-  { date: '2026.02', title: '志愿者工作坊', desc: '围绕叙事表达与公共沟通，进行结构化训练。' },
+  { date: '2026.03', title: 'ZPA科技周', desc: '探索前沿科技与社会影响，做AI与Web3的探索者' },
+  { date: '2026.02', title: 'ZPA年度峰会', desc: '汇聚全体会员力量，共谋发展大计。' },
   { date: '2026.01', title: '守护者圆桌', desc: '邀请成员讨论年度行动重点与资源协同方式。' }
 ]
 </script>
