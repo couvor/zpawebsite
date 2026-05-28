@@ -15,8 +15,8 @@ export default {
         card: '#f7f9ff'
       },
       fontFamily: {
-        sans: ['Noto Serif SC', 'Plus Jakarta Sans', 'DM Sans', 'Segoe UI', 'serif'],
-        display: ['Noto Serif SC', 'Manrope', 'Plus Jakarta Sans', 'serif']
+        sans: ['Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['Noto Serif SC', 'Songti SC', 'STSong', 'serif']
       },
       boxShadow: {
         glow: '0 18px 44px rgba(255, 122, 0, 0.22)',

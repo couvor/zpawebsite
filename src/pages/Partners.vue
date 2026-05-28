@@ -23,7 +23,7 @@
     <RevealBlock :delay="0.1">
       <div class="grid gap-4 md:grid-cols-3">
         <article v-for="stat in stats" :key="stat.number" class="stripe-soft p-8 text-center">
-          <p class="mb-2 text-4xl font-bold text-primary">{{ stat.number }}</p>
+          <p class="stripe-number mb-2 text-4xl font-bold text-primary">{{ stat.number }}</p>
           <h3 class="text-lg font-semibold text-textDeep">{{ stat.label }}</h3>
           <p class="mt-2 text-sm text-slateSoft">{{ stat.description }}</p>
         </article>

@@ -83,7 +83,7 @@
           <article v-for="event in events" :key="event.title" class="overflow-hidden rounded-3xl border border-white/60 bg-white shadow-card transition hover:-translate-y-1 hover:shadow-glow">
             <div class="h-40 bg-gradient-to-br from-primary/70 via-primaryLight/50 to-highlight/40"></div>
             <div class="space-y-2 p-6">
-              <p class="text-xs tracking-wider text-zinc-500">{{ event.date }}</p>
+              <p class="stripe-kicker text-zinc-500">{{ event.date }}</p>
               <h3 class="text-lg font-bold">{{ event.title }}</h3>
               <p class="text-sm text-zinc-600">{{ event.desc }}</p>
             </div>

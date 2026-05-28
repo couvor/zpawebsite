@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Noto+Serif+SC:wght@500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 @import 'animate.css';
 @tailwind base;
 @tailwind components;
@@ -11,7 +11,9 @@
 
 body {
   @apply bg-mist text-ink antialiased;
-  font-family: 'Noto Serif SC', 'Plus Jakarta Sans', 'DM Sans', 'Segoe UI', serif;
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'kern' 1;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
@@ -20,8 +22,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Noto Serif SC', 'Manrope', 'Plus Jakarta Sans', serif;
-  letter-spacing: -0.03em;
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  letter-spacing: 0;
   color: #151f3a;
 }
 
@@ -46,6 +48,7 @@ h6 {
 }
 
 .stripe-kicker {
+  font-family: 'Outfit', 'Noto Sans SC', sans-serif;
   @apply text-xs font-semibold tracking-[0.18em] text-primary uppercase;
 }
 
@@ -62,6 +65,12 @@ h6 {
 }
 
 .hero-elegant-title {
-  font-family: 'Noto Serif SC', 'Manrope', 'Plus Jakarta Sans', serif;
-  letter-spacing: -0.03em;
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  letter-spacing: 0;
+}
+
+.stripe-number {
+  font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0;
 }
