@@ -6,16 +6,13 @@
         <div class="absolute -bottom-20 left-8 h-72 w-72 rounded-full bg-highlight/30 blur-3xl"></div>
 
         <div class="relative max-w-3xl space-y-6">
-          <p class="text-sm font-semibold tracking-[0.18em] text-primary">张明旸保护协会</p>
+          <p class="text-sm font-semibold tracking-[0.18em] text-primary">张明旸保护协会官网</p>
           <h1 class="hero-elegant-title text-4xl font-extrabold leading-[1.08] text-textDeep md:text-6xl">
             世界规模最大的
             <span class="block text-primary">张明旸保护组织</span>
           </h1>
           <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
-            让"附近"回归，成就喜欢无所事事的人，成就喜欢在图书馆读无用之书的人，成就用理想对抗现实的人，想后退，想逃避，ZPA在你身后。 
-          </p>
-          <p class="max-w-2xl text-lg leading-relaxed text-zinc-600">
-            -ZPA执行会长尹梓旭
+            让"附近"回归，守护喜欢无所事事的人，守护喜欢在图书馆读无用之书的人，守护用理想对抗现实的人，想后退想逃避，ZPA在你身后。   -- ZPA执行会长尹梓旭
           </p>
           <div class="flex flex-wrap gap-3">
             <RouterLink to="/activities" class="rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-glow transition hover:-translate-y-0.5">查看最新活动</RouterLink>
@@ -40,7 +37,7 @@
         <h2 class="text-3xl font-bold md:text-4xl">协会理念</h2>
         <div class="grid gap-5 md:grid-cols-3">
           <article v-for="idea in ideas" :key="idea.title" class="stripe-soft p-7 transition hover:-translate-y-1 hover:shadow-glow">
-            <p class="stripe-kicker mb-3">transparent</p>
+            <p class="stripe-kicker mb-3">WHY</p>
             <h3 class="text-2xl font-bold">{{ idea.title }}</h3>
             <p class="mt-4 leading-relaxed text-slateSoft">{{ idea.text }}</p>
           </article>
@@ -57,10 +54,10 @@
 
     <RevealBlock :delay="0.28">
       <div class="space-y-5">
-        <h2 class="text-3xl font-bold md:text-4xl">协会公示</h2>
+        <h2 class="text-3xl font-bold md:text-4xl">预留卡片</h2>
         <div class="grid gap-5 md:grid-cols-3">
           <article v-for="item in reservedCardsA" :key="item.title" class="stripe-soft p-7">
-            <p class="stripe-kicker mb-3">advocacy</p>
+            <p class="stripe-kicker mb-3">WHY</p>
             <h3 class="text-2xl font-bold">{{ item.title }}</h3>
             <p class="mt-4 leading-relaxed text-slateSoft">{{ item.text }}</p>
           </article>
@@ -68,7 +65,7 @@
 
         <div class="grid gap-5 md:grid-cols-3">
           <article v-for="item in reservedCardsB" :key="item.title" class="stripe-soft p-7">
-            <p class="stripe-kicker mb-3">advocacy</p>
+            <p class="stripe-kicker mb-3">WHY</p>
             <h3 class="text-2xl font-bold">{{ item.title }}</h3>
             <p class="mt-4 leading-relaxed text-slateSoft">{{ item.text }}</p>
           </article>
